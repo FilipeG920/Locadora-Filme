@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  cliente: one
+  copia_filme: one
+  data_emprestimo: 2025-10-21 10:41:00
+  data_prevista_devolucao: 2025-10-21 10:41:00
+  data_devolucao_efetiva: 2025-10-21 10:41:00
+  valor_locacao: 9.99
+  valor_multa: 9.99
+
+two:
+  cliente: two
+  copia_filme: two
+  data_emprestimo: 2025-10-21 10:41:00
+  data_prevista_devolucao: 2025-10-21 10:41:00
+  data_devolucao_efetiva: 2025-10-21 10:41:00
+  valor_locacao: 9.99
+  valor_multa: 9.99
