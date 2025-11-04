@@ -1,0 +1,16 @@
+<p style="color: green"><%= notice %></p>
+
+<% content_for :title, "Copia filmes" %>
+
+<h1>Copia filmes</h1>
+
+<div id="copia_filmes">
+  <% @copia_filmes.each do |copia_filme| %>
+    <%= render copia_filme %>
+    <p>
+      <%= link_to "Show this copia filme", copia_filme %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New copia filme", new_copia_filme_path %>

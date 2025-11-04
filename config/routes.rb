@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  resources :copia_filmes
+  resources :filmes
+  resources :generos
   devise_for :clientes
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
