@@ -22,6 +22,19 @@
   </head>
 
   <body>
+    <%# Adicione este bloco de código %>
+    <p>
+      <% if cliente_signed_in? %>
+        Olá, <%= current_cliente.email %>.
+        <%= link_to "Editar Perfil", edit_cliente_registration_path %> |
+        <%= link_to "Sair", destroy_cliente_session_path, data: { turbo_method: :delete } %>
+      <% else %>
+        <%= link_to "Entrar", new_cliente_session_path %> |
+        <%= link_to "Cadastrar-se", new_cliente_registration_path %>
+      <% end %>
+    </p>
+
+    <hr>
     <%= yield %>
   </body>
 </html>

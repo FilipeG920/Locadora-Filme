@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :emprestimos
   resources :copia_filmes
   resources :filmes
   resources :generos
