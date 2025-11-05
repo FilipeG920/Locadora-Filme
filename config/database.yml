@@ -1,0 +1,34 @@
+default: &default
+  adapter: mysql2
+  encoding: utf8mb4
+  pool: 5
+  username: root
+  password: "1234"
+  host: localhost
+
+development:
+  <<: *default
+  database: locadora_filmes_development
+
+test:
+  <<: *default
+  database: locadora_filmes_test
+
+production:
+  primary: &primary_production
+    <<: *default
+    database: locadora_filmes_production
+    username: locadora_filmes
+    password: <%= ENV["LOCADORA_FILMES_DATABASE_PASSWORD"] %>
+  cache:
+    <<: *primary_production
+    database: locadora_filmes_production_cache
+    migrations_paths: db/cache_migrate
+  queue:
+    <<: *primary_production
+    database: locadora_filmes_production_queue
+    migrations_paths: db/queue_migrate
+  cable:
+    <<: *primary_production
+    database: locadora_filmes_production_cable
+    migrations_paths: db/cable_migrate

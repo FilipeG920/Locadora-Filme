@@ -1,0 +1,28 @@
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h2 class="card-title text-center mb-4">🎬 Bem-vindo à Locadora de Filmes</h2>
+
+          <% if cliente_signed_in? %>
+            <p class="text-center">Olá, <strong><%= current_cliente.email %></strong>!</p>
+            <div class="d-grid gap-2">
+              <%= link_to "Ver filmes", filmes_path, class: "btn btn-primary" %>
+              <%= button_to "Sair", destroy_cliente_session_path, method: :delete, class: "btn btn-outline-danger" %>
+            </div>
+          <% else %>
+            <p class="text-center">Acesse sua conta ou cadastre-se:</p>
+            <div class="d-grid gap-2">
+              <%= link_to "Entrar", new_cliente_session_path, class: "btn btn-success" %>
+              <%= link_to "Cadastrar-se", new_cliente_registration_path, class: "btn btn-outline-primary" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
