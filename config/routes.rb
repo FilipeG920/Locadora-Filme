@@ -7,7 +7,20 @@ Rails.application.routes.draw do
     registrations: 'clientes/registrations',
     sessions: 'clientes/sessions'
   }
+  resources :emprestimos do
+    member do
+      patch :devolver
+    end
+  end
 
+  resources :emprestimos
+  resources :clientes do 
+    resources :emprestimos
+  end
+
+  resources :copia_filmes do
+    resources :emprestimos
+  end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

@@ -39,6 +39,28 @@
           <span class="navbar-toggler-icon"></span>
         </button>
 
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <%= link_to "Início", root_path, class: "nav-link" %>
+            </li>
+            <% if cliente_signed_in? %>
+              <li class="nav-item">
+                <%= link_to "Meus Empréstimos", emprestimos_path, class: "nav-link" %>
+              </li>
+              <li class="nav-item">
+                <%= button_to "Sair", destroy_cliente_session_path, method: :delete, class: "nav-link btn btn-link", data: { turbo: false } %>
+              </li>
+            <% else %>
+              <li class="nav-item">
+                <%= link_to "Entrar", new_cliente_session_path, class: "nav-link" %>
+              </li>
+              <li class="nav-item">
+                <%= link_to "Cadastrar-se", new_cliente_registration_path, class: "nav-link" %>
+              </li>
+            <% end %>
+          </ul>
+
       </div>
     </nav>
 

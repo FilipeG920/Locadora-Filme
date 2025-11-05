@@ -9,7 +9,8 @@
           <% if cliente_signed_in? %>
             <p class="text-center">Olá, <strong><%= current_cliente.email %></strong>!</p>
             <div class="d-grid gap-2">
-              <%= link_to "Ver Gêneros", generos_path, class: "btn btn-primary" %>
+              <%= link_to "Ver Gêneros de Filmes", generos_path, class: "btn btn-primary" %>
+              <%= link_to "Ver meus Empréstimos", emprestimos_path, class: "btn btn-primary" %>
               <%= button_to "Sair", destroy_cliente_session_path, method: :delete, class: "btn btn-outline-danger" %>
             </div>
           <% else %>

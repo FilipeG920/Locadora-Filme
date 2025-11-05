@@ -1,0 +1,26 @@
+<%= form_with(model: emprestimo, local: true) do |form| %>
+  <% if emprestimo.errors.any? %>
+    <div class="alert alert-danger">
+      <h5>Erros:</h5>
+      <ul>
+        <% emprestimo.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="mb-3">
+    <%= form.label :data_prevista_devolucao %>
+    <%= form.date_field :data_prevista_devolucao, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :valor_locacao %>
+    <%= form.number_field :valor_locacao, step: 0.01, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.submit "Salvar", class: "btn btn-primary" %>
+  </div>
+<% end %>
