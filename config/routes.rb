@@ -3,7 +3,11 @@ Rails.application.routes.draw do
   resources :copia_filmes
   resources :filmes
   resources :generos
-  devise_for :clientes
+  devise_for :clientes, controllers: {
+    registrations: 'clientes/registrations',
+    sessions: 'clientes/sessions'
+  }
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
