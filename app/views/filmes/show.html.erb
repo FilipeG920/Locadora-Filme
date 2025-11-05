@@ -1,10 +1,62 @@
 <p style="color: green"><%= notice %></p>
 
-<%= render @filme %>
+
+<div class="container mt-5">
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h2 class="card-title mb-3 text-primary"><%= @filme.titulo %></h2>
+      <p><strong>Gênero:</strong> <%= @filme.genero.nome %></p>
+      <p><strong>Ano de Lançamento:</strong> <%= @filme.ano_lancamento %></p>
+      <p><strong>Duração:</strong> <%= @filme.duracao %> min</p>
+      <p><strong>Sinopse:</strong></p>
+      <p class="text-muted"><%= @filme.sinopse %></p>
+
+      <hr>
+
+      <h5 class="mt-4">🎞️ Cópias disponíveis</h5>
+      <p>
+        Este filme possui
+        <span class="fw-bold text-success"><%= @copia_filmes.count %></span>
+        <%= "cópia".pluralize(@copia_filmes.count) %>.
+      </p>
+
+      <% if @copia_filmes.any? %>
+        <div class="table-responsive mt-3">
+          <table class="table table-bordered table-striped align-middle">
+            <thead class="table-dark">
+              <tr>
+                <th>ID</th>
+                <th>Status</th>
+                <th>Tipo de Mídia</th>
+                <th>Criado em</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @copia_filmes.each do |copia| %>
+                <tr>
+                  <td><%= copia.id %></td>
+                  <td><%= copia.status.presence || "Indefinido" %></td>
+                  <td><%= copia.tipo_midia.presence || "Não informado" %></td>
+                  <td><%= l(copia.created_at, format: :short) %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% else %>
+        <p class="text-muted fst-italic">Nenhuma cópia cadastrada para este filme.</p>
+      <% end %>
+
+      <div class="mt-4">
+        <%= link_to "⬅️ Voltar ao gênero", genero_path(@filme.genero), class: "btn btn-secondary" %>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div>
   <%= link_to "Edit this filme", edit_filme_path(@filme) %> |
-  <%= link_to "Back to filmes", filmes_path %>
+  <%= link_to "Back to gêneros", generos_path %>
 
   <%= button_to "Destroy this filme", @filme, method: :delete %>
 </div>

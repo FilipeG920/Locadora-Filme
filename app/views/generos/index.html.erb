@@ -1,16 +1,24 @@
-<p style="color: green"><%= notice %></p>
+<div class="container mt-5">
+  <h2 class="text-center mb-4">Gêneros de Filmes</h2>
 
-<% content_for :title, "Generos" %>
-
-<h1>Generos</h1>
-
-<div id="generos">
-  <% @generos.each do |genero| %>
-    <%= render genero %>
-    <p>
-      <%= link_to "Show this genero", genero %>
-    </p>
+  <% if @generos.any? %>
+    <div class="row">
+      <% @generos.each do |genero| %>
+        <div class="col-md-4 mb-4">
+          <div class="card shadow-sm h-100">
+            <div class="card-body text-center">
+              <h5 class="card-title"><%= genero.nome %></h5>
+              <p class="text-muted mb-3">
+                <%= pluralize(genero.filmes.count, "filme") %>
+              </p>
+              <%= link_to "Ver filmes", genero_path(genero), class: "btn btn-primary btn-sm" %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="text-center text-muted">Nenhum gênero cadastrado.</p>
   <% end %>
 </div>
 
-<%= link_to "New genero", new_genero_path %>
