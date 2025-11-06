@@ -1,0 +1,32 @@
+<%= form_with(model: copia_filme) do |form| %>
+  <% if copia_filme.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(copia_filme.errors.count, "error") %> prohibited this copia_filme from being saved:</h2>
+
+      <ul>
+        <% copia_filme.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :filme_id, style: "display: block" %>
+    <%= form.text_field :filme_id %>
+  </div>
+
+  <div>
+    <%= form.label :status, style: "display: block" %>
+    <%= form.text_field :status %>
+  </div>
+
+  <div>
+    <%= form.label :tipo_midia, style: "display: block" %>
+    <%= form.text_field :tipo_midia %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

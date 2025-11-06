@@ -1,0 +1,23 @@
+<div class="container mt-5">
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h3 class="text-primary mb-3">🎬 Detalhes do Empréstimo</h3>
+
+      <p><strong>Filme:</strong> <%= @emprestimo.copia_filme.filme.titulo %></p>
+      <p><strong>Tipo de Mídia:</strong> <%= @emprestimo.copia_filme.tipo_midia %></p>
+      <p><strong>Data do Empréstimo:</strong> <%= l(@emprestimo.data_emprestimo, format: :short) %></p>
+      <p><strong>Devolução Prevista:</strong> <%= l(@emprestimo.data_prevista_devolucao, format: :short) %></p>
+      <p><strong>Valor da Locação:</strong> R$ <%= number_with_precision(@emprestimo.valor_locacao, precision: 2) %></p>
+
+      <% if @emprestimo.data_devolucao_efetiva.present? %>
+        <p><strong>Devolvido em:</strong> <%= l(@emprestimo.data_devolucao_efetiva, format: :short) %></p>
+      <% else %>
+        <p class="text-warning">Filme ainda não devolvido.</p>
+      <% end %>
+
+      <div class="mt-4">
+        <%= link_to "⬅️ Voltar", emprestimos_path, class: "btn btn-secondary" %>
+      </div>
+    </div>
+  </div>
+</div>

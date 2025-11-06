@@ -1,0 +1,52 @@
+<div class="container mt-5">
+  <h2 class="mb-4 text-primary">📋 Meus Empréstimos</h2>
+
+  <% if @emprestimos.any? %>
+    <div class="table-responsive">
+      <table class="table table-striped table-bordered align-middle shadow-sm">
+        <thead class="table-dark">
+          <tr>
+            <th>Filme</th>
+            <th>Mídia</th>
+            <th>Data Empréstimo</th>
+            <th>Devolução Prevista</th>
+            <th>Devolvido em</th>
+            <th>Valor Locação</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @emprestimos.each do |emprestimo| %>
+            <tr>
+              <td><%= emprestimo.copia_filme.filme.titulo %></td>
+              <td><%= emprestimo.copia_filme.tipo_midia.presence || "Não informado" %></td>
+              <td><%= l(emprestimo.data_emprestimo, format: :short) %></td>
+              <td><%= l(emprestimo.data_prevista_devolucao, format: :short) %></td>
+              <td>
+                <% if emprestimo.data_devolucao_efetiva.present? %>
+                  <span class="badge bg-success"><%= l(emprestimo.data_devolucao_efetiva, format: :short) %></span>
+                <% else %>
+                  <span class="badge bg-warning text-dark">Pendente</span>
+                <% end %>
+              </td>
+              <td>R$ <%= number_with_precision(emprestimo.valor_locacao, precision: 2) %></td>
+              <td>
+                <% if emprestimo.data_devolucao_efetiva.nil? %>
+                  <%= button_to "📀 Devolver",
+                                devolver_emprestimo_path(emprestimo),
+                                method: :patch,
+                                class: "btn btn-sm btn-success",
+                                data: { confirm: "Confirmar devolução?" } %>
+                <% else %>
+                  <button class="btn btn-sm btn-secondary" disabled>Devolvido</button>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <p class="text-muted fst-italic">Você ainda não realizou nenhum empréstimo.</p>
+  <% end %>
+</div>

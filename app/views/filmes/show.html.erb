@@ -1,0 +1,74 @@
+<p style="color: green"><%= notice %></p>
+
+<div class="container mt-5">
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h2 class="card-title mb-3 text-primary"><%= @filme.titulo %></h2>
+      <p><strong>Gênero:</strong> <%= @filme.genero.nome %></p>
+      <p><strong>Ano de Lançamento:</strong> <%= @filme.ano_lancamento %></p>
+      <p><strong>Duração:</strong> <%= @filme.duracao %> min</p>
+      <p><strong>Sinopse:</strong></p>
+      <p class="text-muted"><%= @filme.sinopse %></p>
+
+      <hr>
+
+      <h5 class="mt-4">🎞️ Cópias disponíveis</h5>
+      <p>
+        Este filme possui
+        <span class="fw-bold text-success"><%= @copia_filmes.count %></span>
+        <%= "cópia".pluralize(@copia_filmes.count) %>.
+      </p>
+
+      <% if @copia_filmes.any? %>
+        <div class="table-responsive mt-3">
+          <table class="table table-bordered table-striped align-middle">
+            <thead class="table-dark">
+              <tr>
+                <th>ID</th>
+                <th>Status</th>
+                <th>Tipo de Mídia</th>
+                <th>Criado em</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @copia_filmes.each do |copia| %>
+                <tr>
+                  <td><%= copia.id %></td>
+                  <td><%= copia.status.presence || "Indefinido" %></td>
+                  <td><%= copia.tipo_midia.presence || "Não informado" %></td>
+                  <td><%= l(copia.created_at, format: :short) %></td>
+                  <td>
+                    <% if copia.status == "Disponível" && cliente_signed_in? %>
+                      <%= button_to "🎬 Alugar",
+                                    emprestimos_path(copia_filme_id: copia.id),
+                                    method: :post,
+                                    class: "btn btn-sm btn-primary" %>
+                    <% elsif copia.status == "Alugado" %>
+                      <span class="badge bg-danger">Alugado</span>
+                    <% else %>
+                      <button class="btn btn-sm btn-secondary" disabled>Indisponível</button>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% else %>
+        <p class="text-muted fst-italic">Nenhuma cópia cadastrada para este filme.</p>
+      <% end %>
+
+      <div class="mt-4">
+        <%= link_to "⬅️ Voltar ao gênero", genero_path(@filme.genero), class: "btn btn-secondary" %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="text-center mt-4">
+  <%= link_to "✏️ Editar filme", edit_filme_path(@filme), class: "btn btn-outline-warning me-2" %>
+  <%= link_to "🎬 Voltar aos gêneros", generos_path, class: "btn btn-outline-info me-2" %>
+  <%= button_to "🗑️ Excluir filme", @filme, method: :delete, class: "btn btn-outline-danger" %>
+</div>
+

@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @copia_filme %>
+
+<div>
+  <%= link_to "Edit this copia filme", edit_copia_filme_path(@copia_filme) %> |
+  <%= link_to "Back to copia filmes", copia_filmes_path %>
+
+  <%= button_to "Destroy this copia filme", @copia_filme, method: :delete %>
+</div>
