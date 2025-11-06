@@ -1,23 +1,26 @@
-<%= form_with(model: emprestimo) do |form| %>
+<%= form_with(model: emprestimo, local: true) do |form| %>
   <% if emprestimo.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(emprestimo.errors.count, "error") %> prohibited this emprestimo from being saved:</h2>
+    <div class="alert alert-danger">
+      <h5>Erros:</h5>
       <ul>
-        <% emprestimo.errors.each do |error| %>
-          <li><%= error.full_message %></li>
+        <% emprestimo.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
         <% end %>
       </ul>
     </div>
   <% end %>
 
-  <div>
-    <%= form.label :copia_filme_id, "Selecione o Filme" %>
-    <%# Note o uso de @copias_disponiveis que definimos no controller %>
-    <%= form.collection_select :copia_filme_id, @copias_disponiveis, :id, :id_do_filme_e_midia, { prompt: "Selecione uma cópia" } %>
-    <%# Você precisará criar um método em `copia_filme.rb` chamado `id_do_filme_e_midia` para mostrar um nome bonito no dropdown, ex: "Filme Exemplo (DVD)" %>
+  <div class="mb-3">
+    <%= form.label :data_prevista_devolucao %>
+    <%= form.date_field :data_prevista_devolucao, class: "form-control" %>
   </div>
 
-  <div>
-    <%= form.submit "Alugar Filme" %>
+  <div class="mb-3">
+    <%= form.label :valor_locacao %>
+    <%= form.number_field :valor_locacao, step: 0.01, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.submit "Salvar", class: "btn btn-primary" %>
   </div>
 <% end %>

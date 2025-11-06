@@ -8,6 +8,8 @@ class FilmesController < ApplicationController
 
   # GET /filmes/1 or /filmes/1.json
   def show
+    @filme = Filme.find(params[:id])
+    @copia_filmes = @filme.copia_filmes
   end
 
   # GET /filmes/new

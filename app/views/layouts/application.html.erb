@@ -17,24 +17,69 @@
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
+    <%# --- Bootstrap CSS (via CDN) --- %>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous">
+
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <%# Adicione este bloco de código %>
-    <p>
-      <% if cliente_signed_in? %>
-        Olá, <%= current_cliente.email %>.
-        <%= link_to "Editar Perfil", edit_cliente_registration_path %> |
-        <%= link_to "Sair", destroy_cliente_session_path, data: { turbo_method: :delete } %>
-      <% else %>
-        <%= link_to "Entrar", new_cliente_session_path %> |
-        <%= link_to "Cadastrar-se", new_cliente_registration_path %>
-      <% end %>
-    </p>
+  <body class="bg-light d-flex flex-column min-vh-100">
+    <!-- 🌐 Navbar -->
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+      <div class="container">
+        <a class="navbar-brand fw-bold" href="/">🎬 Locadora</a>
 
-    <hr>
-    <%= yield %>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <%= link_to "Início", root_path, class: "nav-link" %>
+            </li>
+            <% if cliente_signed_in? %>
+              <li class="nav-item">
+                <%= link_to "Meus Empréstimos", emprestimos_path, class: "nav-link" %>
+              </li>
+              <li class="nav-item">
+                <%= button_to "Sair", destroy_cliente_session_path, method: :delete, class: "nav-link btn btn-link", data: { turbo: false } %>
+              </li>
+            <% else %>
+              <li class="nav-item">
+                <%= link_to "Entrar", new_cliente_session_path, class: "nav-link" %>
+              </li>
+              <li class="nav-item">
+                <%= link_to "Cadastrar-se", new_cliente_registration_path, class: "nav-link" %>
+              </li>
+            <% end %>
+          </ul>
+
+      </div>
+    </nav>
+
+    <!-- 📦 Conteúdo da página -->
+    <main class="container flex-grow-1 mt-4">
+      <%= yield %>
+    </main>
+
+    <!-- ⚙️ Footer -->
+    <footer class="bg-dark text-white text-center py-3 mt-auto">
+      <small>&copy; <%= Time.now.year %> Locadora de Filmes — Todos os direitos reservados</small>
+    </footer>
+
+    <!-- ✅ Bootstrap JS -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"></script>
   </body>
+
 </html>
+

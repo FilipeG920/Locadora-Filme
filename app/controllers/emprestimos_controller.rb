@@ -1,80 +1,93 @@
 class EmprestimosController < ApplicationController
-  before_action :set_emprestimo, only: %i[ show edit update destroy ]
+  before_action :authenticate_cliente! # garante que apenas clientes logados acessem
+  before_action :set_emprestimo, only: [:show, :edit, :update, :destroy, :devolver]
 
-  # GET /emprestimos or /emprestimos.json
+  # GET /emprestimos
   def index
-    @emprestimos = Emprestimo.all
+    # Mostra apenas os empréstimos do cliente logado
+    @emprestimos = current_cliente.emprestimos.includes(copia_filme: :filme)
   end
 
-  # GET /emprestimos/1 or /emprestimos/1.json
+  # GET /emprestimos/:id
   def show
   end
 
   # GET /emprestimos/new
   def new
     @emprestimo = Emprestimo.new
-    @copias_disponiveis = CopiaFilme.where(status: "Disponível")
   end
 
-  # GET /emprestimos/1/edit
+  # POST /emprestimos
+  def create
+    copia = CopiaFilme.find(params[:copia_filme_id])
+
+    if copia.status == "Alugado"
+      redirect_back fallback_location: filmes_path, alert: "Essa cópia já está alugada."
+      return
+    end
+
+    @emprestimo = Emprestimo.new(
+      cliente: current_cliente,
+      copia_filme: copia,
+      data_emprestimo: Time.current,
+      data_prevista_devolucao: 7.days.from_now,
+      valor_locacao: 10.0
+    )
+
+    if @emprestimo.save
+      copia.update(status: "Alugado")
+      redirect_to emprestimos_path, notice: "🎬 Empréstimo realizado com sucesso!"
+    else
+      redirect_back fallback_location: filmes_path, alert: "Erro ao realizar o empréstimo."
+    end
+  end
+
+  # GET /emprestimos/:id/edit
   def edit
   end
 
-  # POST /emprestimos or /emprestimos.json
-  def create
-    @copia = CopiaFilme.find(emprestimo_params[:copia_filme_id])
-    @emprestimo = Emprestimo.new(
-      cliente: current_cliente,  # Pega o cliente logado (requer Devise)
-      copia_filme: @copia,
-      data_emprestimo: Time.current,
-      data_prevista_devolucao: Time.current + 3.days, # Ex: 3 dias de aluguel
-      valor_locacao: 5.00 # Ex: Valor fixo
-    )
-
-    respond_to do |format|
-      if @emprestimo.save
-        @copia.update(status: "Alugado")
-        format.html { redirect_to @emprestimo, notice: "Filme alugado com sucesso." }
-        format.json { render :show, status: :created, location: @emprestimo }
-      else
-        @copias_disponiveis = CopiaFilme.where(status: "Disponível")
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @emprestimo.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # PATCH/PUT /emprestimos/1 or /emprestimos/1.json
+  # PATCH/PUT /emprestimos/:id
   def update
-    respond_to do |format|
-      if @emprestimo.update(emprestimo_params)
-        format.html { redirect_to @emprestimo, notice: "Emprestimo was successfully updated.", status: :see_other }
-        format.json { render :show, status: :ok, location: @emprestimo }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @emprestimo.errors, status: :unprocessable_entity }
-      end
+    if @emprestimo.update(emprestimo_params)
+      redirect_to @emprestimo, notice: "Empréstimo atualizado com sucesso."
+    else
+      render :edit, status: :unprocessable_entity
     end
   end
 
-  # DELETE /emprestimos/1 or /emprestimos/1.json
+  # DELETE /emprestimos/:id
   def destroy
-    @emprestimo.destroy!
+    @emprestimo.destroy
+    redirect_to emprestimos_path, notice: "Empréstimo removido com sucesso."
+  end
 
-    respond_to do |format|
-      format.html { redirect_to emprestimos_path, notice: "Emprestimo was successfully destroyed.", status: :see_other }
-      format.json { head :no_content }
+  # PATCH /emprestimos/:id/devolver
+  def devolver
+    if @emprestimo.data_devolucao_efetiva.present?
+      redirect_to emprestimos_path, alert: "Este empréstimo já foi devolvido."
+      return
     end
+
+    @emprestimo.update(data_devolucao_efetiva: Time.current)
+
+    # Libera a cópia
+    @emprestimo.copia_filme.update(status: "Disponível")
+
+    redirect_to emprestimos_path, notice: "📀 Filme devolvido com sucesso!"
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_emprestimo
-      @emprestimo = Emprestimo.find(params.expect(:id))
-    end
 
-    # Only allow a list of trusted parameters through.
-    def emprestimo_params
-      params.expect(emprestimo: [ :cliente_id, :copia_filme_id, :data_emprestimo, :data_prevista_devolucao, :data_devolucao_efetiva, :valor_locacao, :valor_multa ])
-    end
+  def set_emprestimo
+    @emprestimo = Emprestimo.find(params[:id])
+  end
+
+  def emprestimo_params
+    params.require(:emprestimo).permit(
+      :data_prevista_devolucao, :data_devolucao_efetiva,
+      :valor_locacao, :valor_multa, :copia_filme_id
+    )
+  end
 end
+
+
