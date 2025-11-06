@@ -6,8 +6,8 @@ Rails.application.routes.draw do
   resources :filmes
   resources :generos
   devise_for :clientes, controllers: {
-    registrations: 'clientes/registrations',
-    sessions: 'clientes/sessions'
+    registrations: "clientes/registrations",
+    sessions: "clientes/sessions"
   }
   resources :emprestimos do
     member do
@@ -16,7 +16,7 @@ Rails.application.routes.draw do
   end
 
   resources :emprestimos
-  resources :clientes do 
+  resources :clientes do
     resources :emprestimos
   end
 
