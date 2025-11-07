@@ -1,3 +1,3 @@
 class Genero < ApplicationRecord
-	has_many :filmes
+  has_many :filmes, dependent: :destroy
 end

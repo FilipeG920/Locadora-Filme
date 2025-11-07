@@ -1,6 +1,5 @@
 Rails.application.routes.draw do
   get "home/index"
-  devise_for :controllers
   resources :emprestimos
   resources :copia_filmes
   resources :filmes
@@ -16,9 +15,9 @@ Rails.application.routes.draw do
   end
 
   resources :emprestimos
-  resources :clientes do
-    resources :emprestimos
-  end
+  # resources :clientes do
+  #  resources :emprestimos
+  # end
 
   resources :copia_filmes do
     resources :emprestimos

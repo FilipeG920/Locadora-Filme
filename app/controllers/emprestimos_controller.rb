@@ -1,6 +1,6 @@
 class EmprestimosController < ApplicationController
   before_action :authenticate_cliente! # garante que apenas clientes logados acessem
-  before_action :set_emprestimo, only: [:show, :edit, :update, :destroy, :devolver]
+  before_action :set_emprestimo, only: [ :show, :edit, :update, :destroy, :devolver ]
 
   # GET /emprestimos
   def index
@@ -36,7 +36,8 @@ class EmprestimosController < ApplicationController
 
     if @emprestimo.save
       copia.update(status: "Alugado")
-      redirect_to emprestimos_path, notice: "🎬 Empréstimo realizado com sucesso!"
+      # redirect_to emprestimos_path, notice: "🎬 Empréstimo realizado com # sucesso!" <- versão anterior
+      redirect_to @emprestimo, notice: "🎬 Empréstimo realizado com sucesso!"
     else
       redirect_back fallback_location: filmes_path, alert: "Erro ao realizar o empréstimo."
     end
@@ -89,5 +90,3 @@ class EmprestimosController < ApplicationController
     )
   end
 end
-
-

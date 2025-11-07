@@ -1,4 +1,4 @@
 class Filme < ApplicationRecord
   belongs_to :genero
-  has_many :copia_filmes
+  has_many :copia_filmes, dependent: :destroy
 end
