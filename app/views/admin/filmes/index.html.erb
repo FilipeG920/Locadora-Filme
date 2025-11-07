@@ -1,0 +1,38 @@
+<h1 class="mb-4 text-primary">🎬 Gerenciar Filmes</h1>
+
+<div class="mb-3">
+  <%= link_to "➕ Novo Filme", new_admin_filme_path, class: "btn btn-success" %>
+</div>
+
+<table class="table table-bordered table-hover align-middle">
+  <thead class="table-dark">
+    <tr>
+      <th>ID</th>
+      <th>Título</th>
+      <th>Gênero</th>
+      <th>Ano</th>
+      <th>Duração</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @filmes.each do |filme| %>
+      <tr>
+        <td><%= filme.id %></td>
+        <td><%= filme.titulo %></td>
+        <td><%= filme.genero&.nome || "Sem gênero" %></td>
+        <td><%= filme.ano_lancamento %></td>
+        <td><%= filme.duracao %> min</td>
+        <td>
+          <%= link_to "✏️ Editar", edit_admin_filme_path(filme), class: "btn btn-sm btn-warning" %>
+          <%= button_to "🗑️ Excluir", admin_filme_path(filme),
+                        method: :delete,
+                        data: { confirm: "Tem certeza que deseja excluir este filme?" },
+                        class: "btn btn-sm btn-danger" %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to "⬅️ Voltar ao Dashboard", admin_root_path, class: "btn btn-secondary mt-3" %>
