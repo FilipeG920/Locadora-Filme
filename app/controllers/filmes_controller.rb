@@ -1,5 +1,6 @@
 class FilmesController < ApplicationController
   before_action :set_filme, only: %i[ show edit update destroy ]
+  before_action :set_generos, only: %i[ new edit create update ]
 
   # GET /filmes or /filmes.json
   def index
@@ -68,5 +69,13 @@ class FilmesController < ApplicationController
     # Only allow a list of trusted parameters through.
     def filme_params
       params.require(:filme).permit(:titulo, :sinopse, :ano_lancamento, :duracao, :genero_id)
+    end
+
+    def set_generos
+      @generos = Genero.order(:nome)
+    end
+
+    def set_generos
+      @generos = Genero.order(:nome)
     end
 end

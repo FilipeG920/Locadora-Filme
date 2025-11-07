@@ -18,7 +18,7 @@
 
   <div>
     <%= form.label :sinopse, style: "display: block" %>
-    <%= form.textarea :sinopse %>
+    <%= form.text_area :sinopse %>
   </div>
 
   <div>
@@ -33,7 +33,7 @@
 
   <div>
     <%= form.label :genero_id, style: "display: block" %>
-    <%= form.text_field :genero_id %>
+    <%= form.collection_select :genero_id, generos || [], :id, :nome, { include_blank: "Selecione um gênero" } %>
   </div>
 
   <div>
