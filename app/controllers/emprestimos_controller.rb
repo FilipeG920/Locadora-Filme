@@ -4,9 +4,9 @@ class EmprestimosController < ApplicationController
 
   # GET /emprestimos
   def index
-    # Mostra apenas os empréstimos do cliente logado
     @emprestimos = current_cliente.emprestimos.includes(copia_filme: :filme)
   end
+
 
   # GET /emprestimos/:id
   def show
@@ -19,29 +19,23 @@ class EmprestimosController < ApplicationController
 
   # POST /emprestimos
   def create
-    copia = CopiaFilme.find(params[:copia_filme_id])
-
-    if copia.status == "Alugado"
-      redirect_back fallback_location: filmes_path, alert: "Essa cópia já está alugada."
-      return
-    end
-
+    @copia_filme = CopiaFilme.find(params[:copia_filme_id])
     @emprestimo = Emprestimo.new(
-      cliente: current_cliente,
-      copia_filme: copia,
+      cliente: current_cliente,  # 🔥 importante!
+      copia_filme: @copia_filme,
       data_emprestimo: Time.current,
       data_prevista_devolucao: 7.days.from_now,
       valor_locacao: 10.0
     )
 
     if @emprestimo.save
-      copia.update(status: "Alugado")
-      # redirect_to emprestimos_path, notice: "🎬 Empréstimo realizado com # sucesso!" <- versão anterior
-      redirect_to @emprestimo, notice: "🎬 Empréstimo realizado com sucesso!"
+      @copia_filme.update(status: "Alugado")
+      redirect_to emprestimos_path, notice: "🎬 Empréstimo realizado com sucesso!"
     else
-      redirect_back fallback_location: filmes_path, alert: "Erro ao realizar o empréstimo."
+      redirect_to filmes_path, alert: "❌ Erro ao realizar empréstimo."
     end
   end
+
 
   # GET /emprestimos/:id/edit
   def edit

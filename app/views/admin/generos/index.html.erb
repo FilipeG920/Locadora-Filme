@@ -1,0 +1,32 @@
+<h1 class="mb-4 text-primary">🎭 Gerenciar Gêneros</h1>
+
+<div class="mb-3">
+  <%= link_to "➕ Novo Gênero", new_admin_genero_path, class: "btn btn-success" %>
+</div>
+
+<table class="table table-bordered table-hover align-middle">
+  <thead class="table-dark">
+    <tr>
+      <th>ID</th>
+      <th>Nome</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @generos.each do |genero| %>
+      <tr>
+        <td><%= genero.id %></td>
+        <td><%= genero.nome %></td>
+        <td>
+          <%= link_to "✏️ Editar", edit_admin_genero_path(genero), class: "btn btn-sm btn-warning" %>
+          <%= button_to "🗑️ Excluir", admin_genero_path(genero),
+                        method: :delete,
+                        data: { confirm: "Tem certeza que deseja excluir este gênero?" },
+                        class: "btn btn-sm btn-danger" %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to "⬅️ Voltar ao Dashboard", admin_root_path, class: "btn btn-secondary mt-3" %>
