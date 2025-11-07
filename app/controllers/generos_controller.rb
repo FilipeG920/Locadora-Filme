@@ -62,11 +62,11 @@ class GenerosController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_genero
-      @genero = Genero.find(params.expect(:id))
+      @genero = Genero.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def genero_params
-      params.expect(genero: [ :nome ])
+      params.require(:genero).permit(:nome)
     end
 end

@@ -60,11 +60,11 @@ class CopiaFilmesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_copia_filme
-      @copia_filme = CopiaFilme.find(params.expect(:id))
+      @copia_filme = CopiaFilme.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def copia_filme_params
-      params.expect(copia_filme: [ :filme_id, :status, :tipo_midia ])
+      params.require(:copia_filme).permit(:filme_id, :status, :tipo_midia)
     end
 end
