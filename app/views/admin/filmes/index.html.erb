@@ -1,7 +1,8 @@
 <h1 class="mb-4 text-primary">🎬 Gerenciar Filmes</h1>
 
-<div class="mb-3">
+<div class="mb-3 d-flex gap-2 flex-wrap">
   <%= link_to "➕ Novo Filme", new_admin_filme_path, class: "btn btn-success" %>
+  <%= link_to "📄 Exportar PDF", admin_filmes_path(format: :pdf), class: "btn btn-outline-primary" %>
 </div>
 
 <table class="table table-bordered table-hover align-middle">

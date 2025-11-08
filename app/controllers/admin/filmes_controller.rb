@@ -1,6 +1,17 @@
 class Admin::FilmesController < Admin::BaseController
   def index
     @filmes = Filme.includes(:genero).order(:titulo).page(params[:page])
+
+    respond_to do |format|
+      format.html
+      format.pdf do
+        report = FilmesReport.new(Filme.includes(:genero).all)
+        send_data report.render,
+                  filename: "relatorio_filmes.pdf",
+                  type: "application/pdf",
+                  disposition: :inline
+      end
+    end
   end
 
   def new
