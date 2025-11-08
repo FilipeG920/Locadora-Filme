@@ -26,9 +26,15 @@
   <body>
     <!-- ✅ Navbar superior -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <div class="container">
+      <div class="container d-flex align-items-center justify-content-between py-2">
         <a class="navbar-brand fw-bold" href="<%= admin_root_path %>">🎬 Admin Locadora</a>
 
+        <div class="d-flex align-items-center flex-wrap gap-2">
+          <%= link_to "Dashboard", admin_root_path, class: "btn btn-outline-light btn-sm" %>
+          <%= link_to "Clientes", admin_clientes_path, class: "btn btn-outline-light btn-sm" %>
+          <%= link_to "Gêneros", admin_generos_path, class: "btn btn-outline-light btn-sm" %>
+          <%= link_to "Filmes", admin_filmes_path, class: "btn btn-outline-light btn-sm" %>
+        </div>
       </div>
     </nav>
 

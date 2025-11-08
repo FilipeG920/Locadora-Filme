@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   devise_for :admins
   namespace :admin do
     get "dashboard/index"
+    resources :clientes, only: [:index, :show]
     resources :filmes do
       collection do
         post :import

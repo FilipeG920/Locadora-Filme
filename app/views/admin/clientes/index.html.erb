@@ -1,0 +1,49 @@
+<h1 class="text-primary mb-4">👥 Clientes</h1>
+
+<p class="text-muted">Gerencie o cadastro dos clientes da locadora. Clique em um cliente para visualizar detalhes completos e histórico de empréstimos.</p>
+
+<div class="card shadow-sm">
+  <div class="card-body p-0">
+    <% if @clientes.any? %>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>#</th>
+              <th>Nome</th>
+              <th>E-mail</th>
+              <th>Telefone</th>
+              <th>Empréstimos</th>
+              <th class="text-end">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @clientes.each do |cliente| %>
+              <tr>
+                <td><%= cliente.id %></td>
+                <td><%= cliente.nome %></td>
+                <td><%= mail_to cliente.email %></td>
+                <td><%= cliente.telefone.presence || "—" %></td>
+                <td>
+                  <span class="badge bg-secondary"><%= cliente.emprestimos.size %></span>
+                </td>
+                <td class="text-end">
+                  <%= link_to "Ver detalhes", admin_cliente_path(cliente), class: "btn btn-outline-primary btn-sm" %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <div class="p-4 text-center text-muted">
+        Nenhum cliente encontrado até o momento.
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-4">
+  <%= paginate @clientes, theme: 'bootstrap-5' %>
+  <%= link_to "⬅️ Voltar ao Dashboard", admin_root_path, class: "btn btn-secondary" %>
+</div>
