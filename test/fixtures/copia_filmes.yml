@@ -14,3 +14,8 @@ available:
   filme: one
   status: Disponível
   tipo_midia: Digital
+
+rented:
+  filme: one
+  status: Alugado
+  tipo_midia: VHS

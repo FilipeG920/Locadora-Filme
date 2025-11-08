@@ -15,8 +15,8 @@
       <h5 class="mt-4">🎞️ Cópias disponíveis</h5>
       <p>
         Este filme possui
-        <span class="fw-bold text-success"><%= @copia_filmes.count %></span>
-        <%= "cópia".pluralize(@copia_filmes.count) %>.
+        <span class="fw-bold text-success"><%= @copia_filmes_disponiveis.count %></span>
+        <%= "cópia".pluralize(@copia_filmes_disponiveis.count) %>.
       </p>
 
       <% if @copia_filmes.any? %>
@@ -36,23 +36,23 @@
                 <tr>
                   <td><%= copia.id %></td>
 
-                  <% if copia.emprestimos.where(data_devolucao_efetiva: nil).exists? %>
-                    <td><span class="badge bg-danger">Alugado</span></td>
-                  <% else %>
+                  <% if copia.disponivel? %>
                     <td><span class="badge bg-success">Disponível</span></td>
+                  <% else %>
+                    <td><span class="badge bg-danger"><%= copia.status %></span></td>
                   <% end %>
 
                   <td><%= copia.tipo_midia.presence || "Não informado" %></td>
                   <td><%= l(copia.created_at, format: :short) %></td>
 
                   <td>
-                    <% if !copia.emprestimos.where(data_devolucao_efetiva: nil).exists? && cliente_signed_in? %>
+                    <% if copia.disponivel? && cliente_signed_in? %>
                       <%= button_to "🎬 Alugar",
                                     emprestimos_path(copia_filme_id: copia.id),
                                     method: :post,
                                     class: "btn btn-sm btn-primary" %>
-                    <% elsif copia.emprestimos.where(data_devolucao_efetiva: nil).exists? %>
-                      <span class="badge bg-danger">Alugado</span>
+                    <% elsif !copia.disponivel? %>
+                      <span class="badge bg-danger"><%= copia.status %></span>
                     <% else %>
                       <button class="btn btn-sm btn-secondary" disabled>Indisponível</button>
                     <% end %>

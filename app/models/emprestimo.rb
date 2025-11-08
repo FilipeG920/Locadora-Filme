@@ -2,8 +2,6 @@ class Emprestimo < ApplicationRecord
   belongs_to :cliente
   belongs_to :copia_filme
 
-  scope :disponiveis, -> { where(status: "Disponível") }
-
   validates :data_emprestimo, presence: true
   validates :data_prevista_devolucao, presence: true
   validates :valor_locacao,
@@ -13,10 +11,6 @@ class Emprestimo < ApplicationRecord
             numericality: { greater_than_or_equal_to: 0 },
             allow_nil: true
   validate :datas_validas
-
-  def disponivel?
-    status == "Disponível"
-  end
 
   private
 
