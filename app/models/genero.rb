@@ -3,6 +3,13 @@ require "csv"
 class Genero < ApplicationRecord
   has_many :filmes, dependent: :destroy
 
+  before_validation :normalize_nome
+
+  validates :nome,
+            presence: true,
+            length: { maximum: 100 },
+            uniqueness: { case_sensitive: false }
+
   def self.to_csv
     CSV.generate(headers: true) do |csv|
       csv << [ "nome", "total_filmes", "atualizado_em" ]
@@ -44,5 +51,11 @@ class Genero < ApplicationRecord
     end
 
     result
+  end
+
+  private
+
+  def normalize_nome
+    self.nome = nome.to_s.strip
   end
 end

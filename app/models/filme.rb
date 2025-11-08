@@ -4,6 +4,27 @@ class Filme < ApplicationRecord
   belongs_to :genero
   has_many :copia_filmes, dependent: :destroy
 
+  MIN_RELEASE_YEAR = 1895
+  MAX_FUTURE_OFFSET = 1
+
+  before_validation :normalize_attributes
+
+  validates :titulo,
+            presence: true,
+            length: { maximum: 150 },
+            uniqueness: { scope: :ano_lancamento, case_sensitive: false }
+  validates :sinopse, length: { maximum: 1000 }, allow_blank: true
+  validates :ano_lancamento,
+            presence: true,
+            numericality: {
+              only_integer: true,
+              greater_than_or_equal_to: MIN_RELEASE_YEAR,
+              less_than_or_equal_to: ->(_) { Date.current.year + MAX_FUTURE_OFFSET }
+            }
+  validates :duracao,
+            presence: true,
+            numericality: { only_integer: true, greater_than: 0 }
+
   def self.to_csv
     CSV.generate(headers: true) do |csv|
       csv << [
@@ -63,5 +84,12 @@ class Filme < ApplicationRecord
     end
 
     result
+  end
+
+  private
+
+  def normalize_attributes
+    self.titulo = titulo.to_s.strip
+    self.sinopse = sinopse.to_s.strip.presence
   end
 end
