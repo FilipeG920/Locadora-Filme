@@ -4,7 +4,7 @@ class FilmesController < ApplicationController
 
   # GET /filmes or /filmes.json
   def index
-    @filmes = Filme.all
+    @filmes = Filme.includes(:genero).order(:titulo).page(params[:page])
   end
 
   # GET /filmes/1 or /filmes/1.json

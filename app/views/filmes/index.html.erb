@@ -13,4 +13,7 @@
   <% end %>
 </div>
 
-<%= link_to "New filme", new_filme_path %>
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-3">
+  <%= paginate @filmes, theme: 'bootstrap-5' %>
+  <%= link_to "New filme", new_filme_path %>
+</div>

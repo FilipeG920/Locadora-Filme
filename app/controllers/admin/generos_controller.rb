@@ -3,7 +3,7 @@ class Admin::GenerosController < Admin::BaseController
   before_action :set_genero, only: [:edit, :update, :destroy]
 
   def index
-    @generos = Genero.all
+    @generos = Genero.order(:nome).page(params[:page])
   end
 
   def new

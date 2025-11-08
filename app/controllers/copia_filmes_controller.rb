@@ -3,7 +3,7 @@ class CopiaFilmesController < ApplicationController
 
   # GET /copia_filmes or /copia_filmes.json
   def index
-    @copia_filmes = CopiaFilme.all
+    @copia_filmes = CopiaFilme.includes(:filme).order(created_at: :desc).page(params[:page])
   end
 
   # GET /copia_filmes/1 or /copia_filmes/1.json

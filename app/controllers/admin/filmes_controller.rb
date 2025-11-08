@@ -1,6 +1,6 @@
 class Admin::FilmesController < Admin::BaseController
   def index
-    @filmes = Filme.includes(:genero).all
+    @filmes = Filme.includes(:genero).order(:titulo).page(params[:page])
   end
 
   def new
