@@ -1,6 +1,6 @@
 class Admin::GenerosController < Admin::BaseController
   before_action :authenticate_admin!
-  before_action :set_genero, only: [:edit, :update, :destroy]
+  before_action :set_genero, only: [ :edit, :update, :destroy ]
 
   def index
     @generos = Genero.order(:nome).page(params[:page])
