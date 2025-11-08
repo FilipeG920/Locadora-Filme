@@ -1,0 +1,63 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="mb-0"><%= @filme.titulo %></h1>
+  <div>
+    <%= link_to "Editar filme", edit_admin_filme_path(@filme), class: "btn btn-outline-primary me-2" %>
+    <%= link_to "Voltar", admin_filmes_path, class: "btn btn-outline-secondary" %>
+  </div>
+</div>
+
+<div class="row mb-4">
+  <div class="col-md-6">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">Informações</h5>
+        <p class="mb-2"><strong>Gênero:</strong> <%= @filme.genero.nome %></p>
+        <p class="mb-2"><strong>Ano de lançamento:</strong> <%= @filme.ano_lancamento %></p>
+        <p class="mb-2"><strong>Duração:</strong> <%= @filme.duracao %> min</p>
+        <p class="mb-0"><strong>Sinopse:</strong> <%= @filme.sinopse.presence || "Sem sinopse cadastrada" %></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2 class="h4 mb-0">Cópias cadastradas</h2>
+  <%= link_to "Adicionar cópia", new_admin_filme_copia_filme_path(@filme), class: "btn btn-primary" %>
+</div>
+
+<% if @copia_filmes.any? %>
+  <div class="table-responsive">
+    <table class="table table-striped table-hover align-middle">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Status</th>
+          <th scope="col">Tipo de mídia</th>
+          <th scope="col">Atualizada em</th>
+          <th scope="col" class="text-end">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @copia_filmes.each do |copia| %>
+          <tr>
+            <td><%= copia.id %></td>
+            <td>
+              <span class="badge <%= copia.status == "Disponível" ? "bg-success" : "bg-warning text-dark" %>"><%= copia.status %></span>
+            </td>
+            <td><%= copia.tipo_midia %></td>
+            <td><%= l(copia.updated_at, format: :short) %></td>
+            <td class="text-end">
+              <%= link_to "Editar", edit_admin_filme_copia_filme_path(@filme, copia), class: "btn btn-sm btn-outline-primary me-2" %>
+              <%= link_to "Remover", admin_filme_copia_filme_path(@filme, copia), method: :delete, data: { confirm: "Tem certeza que deseja remover esta cópia?" }, class: "btn btn-sm btn-outline-danger" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+  <%= paginate @copia_filmes, theme: 'bootstrap-5' %>
+<% else %>
+  <div class="alert alert-info" role="alert">
+    Nenhuma cópia cadastrada para este filme ainda.
+  </div>
+<% end %>

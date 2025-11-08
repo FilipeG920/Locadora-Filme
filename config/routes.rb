@@ -8,6 +8,7 @@ Rails.application.routes.draw do
       collection do
         post :import
       end
+      resources :copia_filmes, except: [:index, :show]
     end
     resources :emprestimos, only: [:index, :show]
     resources :generos do
@@ -30,17 +31,15 @@ Rails.application.routes.draw do
   # Recursos principais da área do cliente
   resources :filmes, only: [ :index, :show ]
   resources :generos, only: [ :index, :show ]
-  resources :copia_filmes, only: [ :index, :show ]
+  resources :copia_filmes, only: [ :index, :show ] do
+    resources :emprestimos
+  end
 
   # Empréstimos — inclui rota para devolver
   resources :emprestimos do
     member do
       patch :devolver
     end
-  end
-
-  resources :copia_filmes do
-    resources :emprestimos
   end
 
   # ========== ROOT ==========

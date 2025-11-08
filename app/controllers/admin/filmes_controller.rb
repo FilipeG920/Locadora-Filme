@@ -1,4 +1,6 @@
 class Admin::FilmesController < Admin::BaseController
+  before_action :set_filme, only: %i[show edit update destroy]
+
   def index
     @filmes = Filme.includes(:genero).order(:titulo).page(params[:page])
 
@@ -50,12 +52,13 @@ class Admin::FilmesController < Admin::BaseController
     end
   end
 
-  def edit
-    @filme = Filme.find(params[:id])
+  def show
+    @copia_filmes = @filme.copia_filmes.order(created_at: :desc).page(params[:page])
   end
 
+  def edit; end
+
   def update
-    @filme = Filme.find(params[:id])
     if @filme.update(filme_params)
       redirect_to admin_filmes_path, notice: "Filme atualizado com sucesso!"
     else
@@ -64,12 +67,15 @@ class Admin::FilmesController < Admin::BaseController
   end
 
   def destroy
-    @filme = Filme.find(params[:id])
     @filme.destroy
     redirect_to admin_filmes_path, notice: "Filme removido com sucesso!"
   end
 
   private
+
+  def set_filme
+    @filme = Filme.find(params[:id])
+  end
 
   def filme_params
     params.require(:filme).permit(:titulo, :sinopse, :ano_lancamento, :duracao, :genero_id)
