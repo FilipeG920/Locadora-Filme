@@ -3,8 +3,16 @@ Rails.application.routes.draw do
   devise_for :admins
   namespace :admin do
     get "dashboard/index"
-    resources :filmes
-    resources :generos
+    resources :filmes do
+      collection do
+        post :import
+      end
+    end
+    resources :generos do
+      collection do
+        post :import
+      end
+    end
     root to: "dashboard#index"
   end
 

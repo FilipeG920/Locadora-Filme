@@ -4,6 +4,11 @@ class Admin::FilmesController < Admin::BaseController
 
     respond_to do |format|
       format.html
+      format.csv do
+        send_data Filme.to_csv,
+                  filename: "filmes-#{Time.zone.today}.csv",
+                  type: "text/csv"
+      end
       format.pdf do
         report = FilmesReport.new(Filme.includes(:genero).all)
         send_data report.render,
@@ -12,6 +17,24 @@ class Admin::FilmesController < Admin::BaseController
                   disposition: :inline
       end
     end
+  end
+
+  def import
+    if params[:file].blank?
+      redirect_to admin_filmes_path, alert: "Selecione um arquivo CSV para importar."
+      return
+    end
+
+    result = Filme.import_from_csv(params[:file])
+
+    notice_message = []
+    notice_message << "#{result[:created]} filme(s) criado(s)" if result[:created].positive?
+    notice_message << "#{result[:updated]} filme(s) atualizado(s)" if result[:updated].positive?
+    notice_message = notice_message.to_sentence.presence
+
+    alert_message = result[:errors].presence&.join(" ")
+
+    redirect_to admin_filmes_path, notice: notice_message, alert: alert_message
   end
 
   def new

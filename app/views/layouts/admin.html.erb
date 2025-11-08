@@ -34,6 +34,19 @@
 
     <!-- ✅ Conteúdo principal -->
     <div class="container mt-5">
+      <% flash.each do |type, message| %>
+        <% next if message.blank? %>
+        <% css_class = case type.to_sym
+                      when :notice then "alert-success"
+                      when :alert then "alert-danger"
+                      else "alert-info"
+                      end %>
+        <div class="alert <%= css_class %> alert-dismissible fade show" role="alert">
+          <%= message %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      <% end %>
+
       <%= yield %>
     </div>
 

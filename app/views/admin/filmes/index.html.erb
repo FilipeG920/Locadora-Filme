@@ -3,6 +3,22 @@
 <div class="mb-3 d-flex gap-2 flex-wrap">
   <%= link_to "➕ Novo Filme", new_admin_filme_path, class: "btn btn-success" %>
   <%= link_to "📄 Exportar PDF", admin_filmes_path(format: :pdf), class: "btn btn-outline-primary" %>
+  <%= link_to "⬇️ Exportar CSV", admin_filmes_path(format: :csv), class: "btn btn-outline-secondary" %>
+</div>
+
+<div class="card mb-4">
+  <div class="card-body">
+    <h2 class="h5 card-title">Importar filmes via CSV</h2>
+    <p class="text-muted mb-3">Utilize um arquivo CSV com colunas <code>titulo</code>, <code>sinopse</code>, <code>ano_lancamento</code>, <code>duracao</code> e <code>genero</code>.</p>
+    <%= form_with url: import_admin_filmes_path, method: :post, local: true, html: { multipart: true, class: "row g-3 align-items-center" } do |form| %>
+      <div class="col-md-6">
+        <%= form.file_field :file, accept: ".csv", class: "form-control" %>
+      </div>
+      <div class="col-md-auto">
+        <%= form.submit "⬆️ Importar CSV", class: "btn btn-outline-success" %>
+      </div>
+    <% end %>
+  </div>
 </div>
 
 <table class="table table-bordered table-hover align-middle">

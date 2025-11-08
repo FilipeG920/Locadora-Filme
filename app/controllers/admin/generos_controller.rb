@@ -4,6 +4,15 @@ class Admin::GenerosController < Admin::BaseController
 
   def index
     @generos = Genero.order(:nome).page(params[:page])
+
+    respond_to do |format|
+      format.html
+      format.csv do
+        send_data Genero.to_csv,
+                  filename: "generos-#{Time.zone.today}.csv",
+                  type: "text/csv"
+      end
+    end
   end
 
   def new
@@ -33,6 +42,24 @@ class Admin::GenerosController < Admin::BaseController
   def destroy
     @genero.destroy
     redirect_to admin_generos_path, notice: "Gênero removido com sucesso!"
+  end
+
+  def import
+    if params[:file].blank?
+      redirect_to admin_generos_path, alert: "Selecione um arquivo CSV para importar."
+      return
+    end
+
+    result = Genero.import_from_csv(params[:file])
+
+    notice_message = []
+    notice_message << "#{result[:created]} gênero(s) criado(s)" if result[:created].positive?
+    notice_message << "#{result[:updated]} gênero(s) atualizado(s)" if result[:updated].positive?
+    notice_message = notice_message.to_sentence.presence
+
+    alert_message = result[:errors].presence&.join(" ")
+
+    redirect_to admin_generos_path, notice: notice_message, alert: alert_message
   end
 
   private
