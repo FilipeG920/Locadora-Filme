@@ -1,0 +1,106 @@
+<h1 class="mb-4 text-primary">📚 Histórico de Empréstimos</h1>
+
+<div class="card mb-4">
+  <div class="card-body">
+    <%= form_with url: admin_emprestimos_path, method: :get, local: true, class: "row g-3 align-items-end" do |form| %>
+      <div class="col-md-5">
+        <%= form.label :q, "Buscar por cliente ou filme", class: "form-label" %>
+        <%= form.text_field :q,
+                            value: @query,
+                            placeholder: "Ex: João Silva, Matrix",
+                            class: "form-control" %>
+      </div>
+
+      <div class="col-md-4">
+        <%= form.label :status, "Status", class: "form-label" %>
+        <%= form.select :status,
+                        options_for_select([
+                          ["Todos", ""],
+                          ["Somente pendentes", "pendentes"],
+                          ["Somente devolvidos", "devolvidos"]
+                        ], @status_filter),
+                        {},
+                        class: "form-select" %>
+      </div>
+
+      <div class="col-md-3 d-flex gap-2">
+        <%= form.submit "Filtrar", class: "btn btn-primary" %>
+        <%= link_to "Limpar", admin_emprestimos_path, class: "btn btn-outline-secondary" %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<% if @emprestimos.any? %>
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle">
+      <thead class="table-dark">
+        <tr>
+          <th>#</th>
+          <th>Cliente</th>
+          <th>Filme</th>
+          <th>Mídia</th>
+          <th>Data do empréstimo</th>
+          <th>Devolver até</th>
+          <th>Devolvido em</th>
+          <th>Valor</th>
+          <th>Multa</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @emprestimos.each do |emprestimo| %>
+          <% devolvido = emprestimo.data_devolucao_efetiva.present? %>
+          <tr>
+            <td><%= emprestimo.id %></td>
+            <td>
+              <strong><%= emprestimo.cliente&.nome || "Cliente sem nome" %></strong><br>
+              <small class="text-muted"><%= emprestimo.cliente&.email %></small>
+            </td>
+            <td><%= emprestimo.copia_filme&.filme&.titulo || "Filme removido" %></td>
+            <td><%= emprestimo.copia_filme&.tipo_midia %></td>
+            <td>
+              <% if emprestimo.data_emprestimo.present? %>
+                <%= l emprestimo.data_emprestimo, format: :short %>
+              <% else %>
+                —
+              <% end %>
+            </td>
+            <td>
+              <% if emprestimo.data_prevista_devolucao.present? %>
+                <%= l emprestimo.data_prevista_devolucao, format: :short %>
+              <% else %>
+                —
+              <% end %>
+            </td>
+            <td>
+              <% if emprestimo.data_devolucao_efetiva.present? %>
+                <%= l emprestimo.data_devolucao_efetiva, format: :short %>
+              <% else %>
+                —
+              <% end %>
+            </td>
+            <td><%= emprestimo.valor_locacao.present? ? number_to_currency(emprestimo.valor_locacao) : "—" %></td>
+            <td><%= emprestimo.valor_multa.present? ? number_to_currency(emprestimo.valor_multa) : "—" %></td>
+            <td>
+              <% badge_class = devolvido ? "bg-success" : "bg-warning text-dark" %>
+              <span class="badge <%= badge_class %>">
+                <%= devolvido ? "Devolvido" : "Em aberto" %>
+              </span>
+            </td>
+            <td class="text-end">
+              <%= link_to "Detalhes", admin_emprestimo_path(emprestimo), class: "btn btn-sm btn-outline-primary" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% else %>
+  <div class="alert alert-info">Nenhum empréstimo encontrado com os critérios informados.</div>
+<% end %>
+
+<div class="mt-4">
+  <%= link_to "⬅️ Voltar ao Dashboard", admin_root_path, class: "btn btn-secondary" %>
+</div>

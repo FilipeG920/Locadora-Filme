@@ -1,0 +1,66 @@
+<h1 class="mb-4 text-primary">📄 Detalhes do Empréstimo</h1>
+
+<div class="mb-4">
+  <% devolvido = @emprestimo.data_devolucao_efetiva.present? %>
+  <% badge_class = devolvido ? "bg-success" : "bg-warning text-dark" %>
+  <span class="badge <%= badge_class %> fs-6 px-3 py-2">
+    <%= devolvido ? "Devolvido" : "Em aberto" %>
+  </span>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-6">
+    <div class="card h-100">
+      <div class="card-header fw-bold">🎟️ Informações do Cliente</div>
+      <div class="card-body">
+        <p class="mb-1"><strong>Nome:</strong> <%= @emprestimo.cliente&.nome || "Cliente sem nome" %></p>
+        <p class="mb-1"><strong>Email:</strong> <%= @emprestimo.cliente&.email %></p>
+        <p class="mb-0"><strong>Telefone:</strong> <%= @emprestimo.cliente&.telefone.presence || "Não informado" %></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card h-100">
+      <div class="card-header fw-bold">🎬 Detalhes do Filme</div>
+      <div class="card-body">
+        <p class="mb-1"><strong>Título:</strong> <%= @emprestimo.copia_filme&.filme&.titulo || "Filme removido" %></p>
+        <p class="mb-1"><strong>Mídia:</strong> <%= @emprestimo.copia_filme&.tipo_midia %></p>
+        <p class="mb-0"><strong>Status da cópia:</strong> <%= @emprestimo.copia_filme&.status %></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card mt-4">
+  <div class="card-header fw-bold">⏱️ Datas e Valores</div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-md-6">
+        <p><strong>Data do empréstimo:</strong><br>
+          <%= @emprestimo.data_emprestimo.present? ? l(@emprestimo.data_emprestimo, format: :long) : "—" %>
+        </p>
+        <p><strong>Data prevista para devolução:</strong><br>
+          <%= @emprestimo.data_prevista_devolucao.present? ? l(@emprestimo.data_prevista_devolucao, format: :long) : "—" %>
+        </p>
+      </div>
+      <div class="col-md-6">
+        <p><strong>Data de devolução efetiva:</strong><br>
+          <%= @emprestimo.data_devolucao_efetiva.present? ? l(@emprestimo.data_devolucao_efetiva, format: :long) : "—" %>
+        </p>
+        <p><strong>Valor da locação:</strong><br>
+          <%= @emprestimo.valor_locacao.present? ? number_to_currency(@emprestimo.valor_locacao) : "—" %>
+        </p>
+        <p class="mb-0"><strong>Valor da multa:</strong><br>
+          <%= @emprestimo.valor_multa.present? ? number_to_currency(@emprestimo.valor_multa) : "—" %>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex gap-2 mt-4">
+  <%= link_to "⬅️ Voltar", admin_emprestimos_path, class: "btn btn-secondary" %>
+  <%= link_to "Ir para o cliente", admin_cliente_path(@emprestimo.cliente), class: "btn btn-outline-primary" if @emprestimo.cliente.present? %>
+  <%= link_to "Ver filme", admin_filme_path(@emprestimo.copia_filme.filme), class: "btn btn-outline-dark" if @emprestimo.copia_filme&.filme.present? %>
+</div>

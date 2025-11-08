@@ -9,6 +9,7 @@ Rails.application.routes.draw do
         post :import
       end
     end
+    resources :emprestimos, only: [:index, :show]
     resources :generos do
       collection do
         post :import
