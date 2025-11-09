@@ -1,5 +1,25 @@
 <h1 class="mb-4 text-primary">📚 Histórico de Empréstimos</h1>
 
+<div class="card border-0 shadow-sm mb-4">
+  <div class="card-body d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
+    <div class="btn-group" role="group" aria-label="Exportações">
+      <%= link_to "⬇️ Exportar CSV", admin_emprestimos_path(request.query_parameters.merge(format: :csv)), class: "btn btn-outline-primary" %>
+      <%= link_to "🖨️ Exportar PDF", admin_emprestimos_path(request.query_parameters.merge(format: :pdf)), class: "btn btn-outline-primary" %>
+    </div>
+
+    <%= form_with url: import_admin_emprestimos_path, method: :post, local: true, html: { multipart: true, class: "d-flex flex-column flex-sm-row gap-2 align-items-stretch align-items-sm-center" } do |form| %>
+      <div>
+        <%= form.file_field :file, accept: ".csv", class: "form-control" %>
+      </div>
+      <%= form.submit "📤 Importar CSV", class: "btn btn-success" %>
+    <% end %>
+  </div>
+</div>
+
+<div class="alert alert-info" role="alert">
+  <strong>Formato esperado do CSV:</strong> cabeçalho com <code>Cliente (email)</code>, <code>Filme</code>, <code>Dias</code>, <code>Valor total</code>, <code>Valor multa</code>. O sistema utiliza o e-mail para encontrar o cliente e define a data prevista adicionando os dias informados à data atual.
+</div>
+
 <div class="card mb-4">
   <div class="card-body">
     <%= form_with url: admin_emprestimos_path, method: :get, local: true, class: "row g-3 align-items-end" do |form| %>

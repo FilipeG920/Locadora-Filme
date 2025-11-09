@@ -3,14 +3,22 @@ Rails.application.routes.draw do
   devise_for :admins
   namespace :admin do
     get "dashboard/index"
-    resources :clientes, only: [:index, :show]
+    resources :clientes, only: [:index, :show] do
+      collection do
+        post :import
+      end
+    end
     resources :filmes do
       collection do
         post :import
       end
       resources :copia_filmes, except: [:index, :show]
     end
-    resources :emprestimos, only: [:index, :show]
+    resources :emprestimos, only: [:index, :show] do
+      collection do
+        post :import
+      end
+    end
     resources :generos do
       collection do
         post :import
