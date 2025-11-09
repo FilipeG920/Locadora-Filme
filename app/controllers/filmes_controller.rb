@@ -10,8 +10,8 @@ class FilmesController < ApplicationController
   # GET /filmes/1 or /filmes/1.json
   def show
     @filme = Filme.find(params[:id])
-    @copia_filmes = @filme.copia_filmes
-    @copia_filmes_disponiveis = @filme.copia_filmes.disponiveis
+    @copia_filmes = @filme.copia_filmes.includes(:emprestimos)
+    @copia_filmes_disponiveis = @filme.copia_filmes.disponiveis_para_aluguel
   end
 
   # GET /filmes/new

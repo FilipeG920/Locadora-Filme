@@ -14,6 +14,7 @@ class Emprestimo < ApplicationRecord
             numericality: { greater_than_or_equal_to: 0 },
             allow_nil: true
   validate :datas_validas
+  validate :copia_sem_emprestimo_ativo
 
   def self.to_csv(collection = all)
     registros = normalize_collection(collection)
@@ -64,7 +65,7 @@ class Emprestimo < ApplicationRecord
           filme = Filme.find_by(titulo: filme_titulo)
           raise ActiveRecord::RecordNotFound, "filme '#{filme_titulo}' não encontrado" if filme.nil?
 
-          copia = filme.copia_filmes.disponiveis.first || filme.copia_filmes.first
+          copia = filme.copia_filmes.disponiveis_para_aluguel.first || filme.copia_filmes.first
           raise ActiveRecord::RecordNotFound, "nenhuma cópia cadastrada para '#{filme_titulo}'" if copia.nil?
 
           dias = parse_days(atributos["dias"])
@@ -87,9 +88,7 @@ class Emprestimo < ApplicationRecord
             raise ActiveRecord::RecordInvalid, emprestimo.errors.full_messages.to_sentence
           end
 
-          if copia.respond_to?(:status) && copia.disponivel?
-            copia.update!(status: "Alugado")
-          end
+          copia.marcar_como_alugada! if copia.respond_to?(:marcar_como_alugada!)
         rescue ArgumentError, ActiveRecord::RecordInvalid, ActiveRecord::RecordNotFound => e
           raise e.class, "Linha #{index + 2}: #{e.message}"
         end
@@ -155,5 +154,21 @@ class Emprestimo < ApplicationRecord
     if data_devolucao_efetiva.present? && data_devolucao_efetiva < data_emprestimo
       errors.add(:data_devolucao_efetiva, "não pode ser anterior à data do empréstimo")
     end
+  end
+
+  def ativo?
+    data_devolucao_efetiva.blank?
+  end
+
+  def copia_sem_emprestimo_ativo
+    return if copia_filme_id.blank?
+    return unless ativo?
+
+    emprestimos_em_aberto = self.class.where(copia_filme_id: copia_filme_id, data_devolucao_efetiva: nil)
+    emprestimos_em_aberto = emprestimos_em_aberto.where.not(id: id) if persisted?
+
+    return unless emprestimos_em_aberto.exists?
+
+    errors.add(:copia_filme, "já possui um empréstimo em aberto")
   end
 end

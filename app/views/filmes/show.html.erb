@@ -1,4 +1,9 @@
-<p style="color: green"><%= notice %></p>
+<% if notice.present? %>
+  <p style="color: green"><%= notice %></p>
+<% end %>
+<% if alert.present? %>
+  <p style="color: red"><%= alert %></p>
+<% end %>
 
 <div class="container mt-5">
   <div class="card shadow-sm">
@@ -33,11 +38,14 @@
             </thead>
             <tbody>
               <% @copia_filmes.each do |copia| %>
+                <% emprestimo_ativo = copia.emprestimo_ativo? %>
                 <tr>
                   <td><%= copia.id %></td>
 
-                  <% if copia.disponivel? %>
+                  <% if copia.disponivel_para_aluguel? %>
                     <td><span class="badge bg-success">Disponível</span></td>
+                  <% elsif emprestimo_ativo %>
+                    <td><span class="badge bg-warning text-dark">Em empréstimo</span></td>
                   <% else %>
                     <td><span class="badge bg-danger"><%= copia.status %></span></td>
                   <% end %>
@@ -46,11 +54,13 @@
                   <td><%= l(copia.created_at, format: :short) %></td>
 
                   <td>
-                    <% if copia.disponivel? && cliente_signed_in? %>
+                    <% if copia.disponivel_para_aluguel? && cliente_signed_in? %>
                       <%= button_to "🎬 Alugar",
                                     emprestimos_path(copia_filme_id: copia.id),
                                     method: :post,
                                     class: "btn btn-sm btn-primary" %>
+                    <% elsif emprestimo_ativo %>
+                      <span class="badge bg-warning text-dark">Em empréstimo</span>
                     <% elsif !copia.disponivel? %>
                       <span class="badge bg-danger"><%= copia.status %></span>
                     <% else %>
