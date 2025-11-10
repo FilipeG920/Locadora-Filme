@@ -31,6 +31,32 @@
 
   <body class="bg-light d-flex flex-column min-vh-100">
     <!-- 🌐 Navbar -->
+  <% if request.path.start_with?("/admin") && !request.path.start_with?("/admins/sign_in") %>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary shadow-sm">
+      <div class="container">
+        <a class="navbar-brand fw-bold" href="/admin">🎬 Painel Admin</a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarAdmin" aria-controls="navbarAdmin" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarAdmin">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <%= button_to "Sair",
+                  destroy_admin_session_path,
+                  method: :delete,
+                  class: "btn btn-outline-danger ms-2",
+                  form: { "data-turbo" => "false" } %>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  <% end %>
+
+
+  <% unless request.path.start_with?("/admin") %>
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
       <div class="container">
         <a class="navbar-brand fw-bold" href="/">🎬 Locadora</a>
@@ -44,7 +70,7 @@
             <li class="nav-item">
               <%= link_to "Início", root_path, class: "nav-link" %>
             </li>
-            <% if cliente_signed_in? %>
+            <% if (cliente_signed_in?) %>
               <li class="nav-item">
                 <%= link_to "Meus Empréstimos", emprestimos_path, class: "nav-link" %>
               </li>
@@ -63,7 +89,7 @@
         </div>
       </div>
     </nav>
-
+  <% end %>
     <!-- 📦 Conteúdo da página -->
     <main class="container flex-grow-1 mt-4">
       <%= yield %>
