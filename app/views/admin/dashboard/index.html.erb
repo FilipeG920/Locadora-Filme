@@ -1,0 +1,12 @@
+<h1 class="text-primary mb-4">🎬 Painel Administrativo</h1>
+
+<p class="lead">Bem-vindo, <strong><%= current_admin.email %></strong>!</p>
+
+<div class="d-flex flex-column gap-3 mt-4">
+  <%= link_to "👥 Gerenciar Clientes", admin_clientes_path, class: "btn btn-outline-success btn-lg" %>
+  <%= link_to "🎭 Gerenciar Gêneros", admin_generos_path, class: "btn btn-outline-dark btn-lg" %>
+  <%= link_to "🎬 Gerenciar Filmes", admin_filmes_path, class: "btn btn-outline-primary btn-lg" %>
+  <%= link_to "📚 Acompanhar Empréstimos", admin_emprestimos_path, class: "btn btn-outline-info btn-lg" %>
+</div>
+
+

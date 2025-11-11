@@ -2,10 +2,20 @@
 
 one:
   filme: one
-  status: MyString
-  tipo_midia: MyString
+  status: Disponível
+  tipo_midia: DVD
 
 two:
   filme: two
-  status: MyString
-  tipo_midia: MyString
+  status: Disponível
+  tipo_midia: Blu-ray
+
+available:
+  filme: one
+  status: Disponível
+  tipo_midia: Digital
+
+rented:
+  filme: one
+  status: Alugado
+  tipo_midia: VHS

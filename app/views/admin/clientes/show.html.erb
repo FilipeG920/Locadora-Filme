@@ -1,0 +1,87 @@
+<h1 class="text-primary mb-4">👤 <%= @cliente.nome %></h1>
+
+<div class="row g-4">
+  <div class="col-lg-4">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <h2 class="h5 text-secondary mb-3">Informações do Cliente</h2>
+        <dl class="row mb-0">
+          <dt class="col-5">E-mail</dt>
+          <dd class="col-7"><%= mail_to @cliente.email %></dd>
+
+          <dt class="col-5">Telefone</dt>
+          <dd class="col-7"><%= @cliente.telefone.presence || "—" %></dd>
+
+          <dt class="col-5">Endereço</dt>
+          <dd class="col-7"><%= @cliente.endereco.presence || "—" %></dd>
+
+          <dt class="col-5">Data de nascimento</dt>
+          <dd class="col-7"><%= @cliente.data_nascimento.present? ? l(@cliente.data_nascimento) : "—" %></dd>
+
+          <dt class="col-5">Cadastrado em</dt>
+          <dd class="col-7"><%= l(@cliente.created_at, format: :short) %></dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-8">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h2 class="h5 text-secondary mb-0">Histórico de Empréstimos</h2>
+          <span class="badge bg-primary">Total: <%= @emprestimos.count %></span>
+        </div>
+
+        <% if @emprestimos.any? %>
+          <div class="table-responsive">
+            <table class="table table-striped align-middle">
+              <thead class="table-light">
+                <tr>
+                  <th>Filme</th>
+                  <th>Cópia</th>
+                  <th>Empréstimo</th>
+                  <th>Prevista</th>
+                  <th>Devolução</th>
+                  <th class="text-end">Valores</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @emprestimos.each do |emprestimo| %>
+                  <tr>
+                    <td><%= emprestimo.copia_filme.filme.titulo %></td>
+                    <td><span class="badge bg-dark">#<%= emprestimo.copia_filme.id %></span></td>
+                    <td><%= emprestimo.data_emprestimo.present? ? l(emprestimo.data_emprestimo, format: :short) : "—" %></td>
+                    <td><%= emprestimo.data_prevista_devolucao.present? ? l(emprestimo.data_prevista_devolucao, format: :short) : "—" %></td>
+                    <td>
+                      <% if emprestimo.data_devolucao_efetiva.present? %>
+                        <span class="badge bg-success">Devolvido</span>
+                        <br>
+                        <small><%= l(emprestimo.data_devolucao_efetiva, format: :short) %></small>
+                      <% else %>
+                        <span class="badge bg-warning text-dark">Em aberto</span>
+                      <% end %>
+                    </td>
+                    <td class="text-end">
+                      <div class="fw-semibold">Locação: <%= emprestimo.valor_locacao.present? ? number_to_currency(emprestimo.valor_locacao) : "—" %></div>
+                      <% if emprestimo.valor_multa.present? %>
+                        <small class="text-muted">Multa: <%= number_to_currency(emprestimo.valor_multa) %></small>
+                      <% end %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        <% else %>
+          <p class="text-muted mb-0">Este cliente ainda não possui empréstimos registrados.</p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-4">
+  <%= link_to "⬅️ Voltar para a lista", admin_clientes_path, class: "btn btn-secondary" %>
+  <%= link_to "Ir para o Dashboard", admin_root_path, class: "btn btn-outline-primary" %>
+</div>

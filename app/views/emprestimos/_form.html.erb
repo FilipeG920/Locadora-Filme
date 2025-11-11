@@ -1,8 +1,8 @@
-<%= form_with(model: emprestimo, local: true) do |form| %>
+<%= form_with(model: emprestimo, local: true, class: "card p-4 shadow-sm") do |form| %>
   <% if emprestimo.errors.any? %>
     <div class="alert alert-danger">
-      <h5>Erros:</h5>
-      <ul>
+      <h5 class="alert-heading">Não foi possível salvar o empréstimo.</h5>
+      <ul class="mb-0">
         <% emprestimo.errors.full_messages.each do |msg| %>
           <li><%= msg %></li>
         <% end %>
@@ -11,13 +11,33 @@
   <% end %>
 
   <div class="mb-3">
-    <%= form.label :data_prevista_devolucao %>
-    <%= form.date_field :data_prevista_devolucao, class: "form-control" %>
+    <%= form.label :data_prevista_devolucao, class: "form-label" %>
+    <%= form.date_field :data_prevista_devolucao, class: "form-control #{'is-invalid' if emprestimo.errors[:data_prevista_devolucao].present?}" %>
+    <% if emprestimo.errors[:data_prevista_devolucao].present? %>
+      <div class="invalid-feedback">
+        <%= emprestimo.errors[:data_prevista_devolucao].first %>
+      </div>
+    <% end %>
   </div>
 
   <div class="mb-3">
-    <%= form.label :valor_locacao %>
-    <%= form.number_field :valor_locacao, step: 0.01, class: "form-control" %>
+    <%= form.label :valor_locacao, class: "form-label" %>
+    <%= form.number_field :valor_locacao, step: 0.01, class: "form-control #{'is-invalid' if emprestimo.errors[:valor_locacao].present?}" %>
+    <% if emprestimo.errors[:valor_locacao].present? %>
+      <div class="invalid-feedback">
+        <%= emprestimo.errors[:valor_locacao].first %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :valor_multa, class: "form-label" %>
+    <%= form.number_field :valor_multa, step: 0.01, class: "form-control #{'is-invalid' if emprestimo.errors[:valor_multa].present?}" %>
+    <% if emprestimo.errors[:valor_multa].present? %>
+      <div class="invalid-feedback">
+        <%= emprestimo.errors[:valor_multa].first %>
+      </div>
+    <% end %>
   </div>
 
   <div class="mb-3">

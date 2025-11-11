@@ -1,4 +1,3 @@
-
 <div class="container mt-5">
   <div class="row justify-content-center">
     <div class="col-md-6">
@@ -13,11 +12,26 @@
               <%= link_to "Ver meus Empréstimos", emprestimos_path, class: "btn btn-primary" %>
               <%= button_to "Sair", destroy_cliente_session_path, method: :delete, class: "btn btn-outline-danger" %>
             </div>
+
+          <% elsif admin_signed_in? %>
+            <p class="text-center">Olá, administrador!</p>
+            <div class="d-grid gap-2">
+              <%= link_to "Painel Administrativo", admin_root_path, class: "btn btn-dark" %>
+              <%= button_to "Sair do Admin", destroy_admin_session_path, method: :delete, class: "btn btn-outline-danger" %>
+            </div>
+
           <% else %>
             <p class="text-center">Acesse sua conta ou cadastre-se:</p>
-            <div class="d-grid gap-2">
-              <%= link_to "Entrar", new_cliente_session_path, class: "btn btn-success" %>
+            <div class="d-grid gap-2 mb-3">
+              <%= link_to "Entrar como Cliente", new_cliente_session_path, class: "btn btn-success" %>
               <%= link_to "Cadastrar-se", new_cliente_registration_path, class: "btn btn-outline-primary" %>
+            </div>
+
+            <hr>
+
+            <div class="text-center">
+              <p class="text-muted mb-2">Área administrativa</p>
+              <%= link_to "Entrar como Administrador", new_admin_session_path, class: "btn btn-outline-dark btn-sm" %>
             </div>
           <% end %>
         </div>
@@ -25,5 +39,3 @@
     </div>
   </div>
 </div>
-
-

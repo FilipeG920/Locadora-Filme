@@ -13,4 +13,6 @@
   <% end %>
 </div>
 
-<%= link_to "New copia filme", new_copia_filme_path %>
+<div class="d-flex justify-content-end mt-3">
+  <%= paginate @copia_filmes, theme: 'bootstrap-5' %>
+</div>

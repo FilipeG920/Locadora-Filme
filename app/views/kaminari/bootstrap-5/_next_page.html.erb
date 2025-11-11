@@ -1,0 +1,8 @@
+<% page_available = defined?(page) && page %>
+<li class="page-item <%= 'disabled' unless page_available %>" aria-disabled="<%= (!page_available).to_s %>">
+  <% if page_available %>
+    <%= link_to raw(t('views.pagination.next')), url, class: 'page-link', rel: 'next' %>
+  <% else %>
+    <span class="page-link" rel="next"><%= raw(t('views.pagination.next')) %></span>
+  <% end %>
+</li>

@@ -1,12 +1,12 @@
 class EmprestimosController < ApplicationController
   before_action :authenticate_cliente! # garante que apenas clientes logados acessem
-  before_action :set_emprestimo, only: [:show, :edit, :update, :destroy, :devolver]
+  before_action :set_emprestimo, only: [ :show, :edit, :update, :destroy, :devolver ]
 
   # GET /emprestimos
   def index
-    # Mostra apenas os empréstimos do cliente logado
     @emprestimos = current_cliente.emprestimos.includes(copia_filme: :filme)
   end
+
 
   # GET /emprestimos/:id
   def show
@@ -19,28 +19,37 @@ class EmprestimosController < ApplicationController
 
   # POST /emprestimos
   def create
-    copia = CopiaFilme.find(params[:copia_filme_id])
-
-    if copia.status == "Alugado"
-      redirect_back fallback_location: filmes_path, alert: "Essa cópia já está alugada."
+    @copia_filme = CopiaFilme.find(params[:copia_filme_id])
+    unless @copia_filme.disponivel_para_aluguel?
+      redirect_to filme_path(@copia_filme.filme), alert: "Esta cópia está indisponível no momento."
       return
     end
 
-    @emprestimo = Emprestimo.new(
-      cliente: current_cliente,
-      copia_filme: copia,
+    @emprestimo = current_cliente.emprestimos.new(
+      copia_filme: @copia_filme,
       data_emprestimo: Time.current,
       data_prevista_devolucao: 7.days.from_now,
       valor_locacao: 10.0
     )
 
-    if @emprestimo.save
-      copia.update(status: "Alugado")
+    begin
+      Emprestimo.transaction do
+        @emprestimo.save!
+        @copia_filme.marcar_como_alugada! if @copia_filme.respond_to?(:marcar_como_alugada!)
+      end
+
       redirect_to emprestimos_path, notice: "🎬 Empréstimo realizado com sucesso!"
-    else
-      redirect_back fallback_location: filmes_path, alert: "Erro ao realizar o empréstimo."
+    rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved => e
+      mensagem = if e.respond_to?(:record) && e.record.present?
+                   e.record.errors.full_messages.to_sentence.presence
+                 end
+
+      mensagem ||= @emprestimo.errors.full_messages.to_sentence.presence
+      mensagem ||= "Não foi possível registrar o empréstimo."
+      redirect_to filme_path(@copia_filme.filme), alert: "❌ #{mensagem}"
     end
   end
+
 
   # GET /emprestimos/:id/edit
   def edit
@@ -57,8 +66,27 @@ class EmprestimosController < ApplicationController
 
   # DELETE /emprestimos/:id
   def destroy
-    @emprestimo.destroy
-    redirect_to emprestimos_path, notice: "Empréstimo removido com sucesso."
+    copia = @emprestimo.copia_filme
+    ativo = @emprestimo.ativo?
+
+    begin
+      Emprestimo.transaction do
+        @emprestimo.destroy!
+        if ativo && copia.respond_to?(:marcar_como_disponivel!)
+          copia.marcar_como_disponivel!
+        end
+      end
+
+      redirect_to emprestimos_path, notice: "Empréstimo removido com sucesso."
+    rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotDestroyed => e
+      mensagem = if e.respond_to?(:record) && e.record.present?
+                   e.record.errors.full_messages.to_sentence.presence
+                 end
+
+      mensagem ||= @emprestimo.errors.full_messages.to_sentence.presence
+      mensagem ||= "Não foi possível atualizar o status da cópia."
+      redirect_to emprestimos_path, alert: mensagem
+    end
   end
 
   # PATCH /emprestimos/:id/devolver
@@ -68,18 +96,28 @@ class EmprestimosController < ApplicationController
       return
     end
 
-    @emprestimo.update(data_devolucao_efetiva: Time.current)
+    begin
+      Emprestimo.transaction do
+        @emprestimo.update!(data_devolucao_efetiva: Time.current)
+        @emprestimo.copia_filme.marcar_como_disponivel! if @emprestimo.copia_filme.respond_to?(:marcar_como_disponivel!)
+      end
 
-    # Libera a cópia
-    @emprestimo.copia_filme.update(status: "Disponível")
+      redirect_to emprestimos_path, notice: "📀 Filme devolvido com sucesso!"
+    rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved => e
+      mensagem = if e.respond_to?(:record) && e.record.present?
+                   e.record.errors.full_messages.to_sentence.presence
+                 end
 
-    redirect_to emprestimos_path, notice: "📀 Filme devolvido com sucesso!"
+      mensagem ||= @emprestimo.errors.full_messages.to_sentence.presence
+      mensagem ||= "Não foi possível registrar a devolução."
+      redirect_to emprestimos_path, alert: mensagem
+    end
   end
 
   private
 
   def set_emprestimo
-    @emprestimo = Emprestimo.find(params[:id])
+    @emprestimo = current_cliente.emprestimos.find(params[:id])
   end
 
   def emprestimo_params
@@ -89,5 +127,3 @@ class EmprestimosController < ApplicationController
     )
   end
 end
-
-

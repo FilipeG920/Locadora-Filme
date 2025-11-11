@@ -1,0 +1,24 @@
+<%= form_with(model: [:admin, genero], local: true, class: "card p-4 shadow-sm") do |f| %>
+  <% if genero.errors.any? %>
+    <div class="alert alert-danger">
+      <h5 class="alert-heading">Não foi possível salvar o gênero.</h5>
+      <ul class="mb-0">
+        <% genero.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="mb-3">
+    <%= f.label :nome, "Nome do Gênero", class: "form-label" %>
+    <%= f.text_field :nome, class: "form-control #{'is-invalid' if genero.errors[:nome].present?}", required: true %>
+    <% if genero.errors[:nome].present? %>
+      <div class="invalid-feedback">
+        <%= genero.errors[:nome].first %>
+      </div>
+    <% end %>
+  </div>
+
+  <%= f.submit "💾 Salvar", class: "btn btn-primary" %>
+<% end %>

@@ -1,22 +1,24 @@
-<%= form_with(model: genero) do |form| %>
+<%= form_with(model: genero, local: true, class: "card p-4 shadow-sm") do |form| %>
   <% if genero.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(genero.errors.count, "error") %> prohibited this genero from being saved:</h2>
-
-      <ul>
-        <% genero.errors.each do |error| %>
-          <li><%= error.full_message %></li>
+    <div class="alert alert-danger">
+      <h5 class="alert-heading">Não foi possível salvar o gênero.</h5>
+      <ul class="mb-0">
+        <% genero.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
         <% end %>
       </ul>
     </div>
   <% end %>
 
-  <div>
-    <%= form.label :nome, style: "display: block" %>
-    <%= form.text_field :nome %>
+  <div class="mb-3">
+    <%= form.label :nome, class: "form-label" %>
+    <%= form.text_field :nome, class: "form-control #{'is-invalid' if genero.errors[:nome].present?}" %>
+    <% if genero.errors[:nome].present? %>
+      <div class="invalid-feedback">
+        <%= genero.errors[:nome].first %>
+      </div>
+    <% end %>
   </div>
 
-  <div>
-    <%= form.submit %>
-  </div>
+  <%= form.submit "Salvar", class: "btn btn-primary" %>
 <% end %>

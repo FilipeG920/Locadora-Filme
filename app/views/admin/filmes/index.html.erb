@@ -1,0 +1,59 @@
+<h1 class="mb-4 text-primary">🎬 Gerenciar Filmes</h1>
+
+<div class="mb-3 d-flex gap-2 flex-wrap">
+  <%= link_to "➕ Novo Filme", new_admin_filme_path, class: "btn btn-success" %>
+  <%= link_to "📄 Exportar PDF", admin_filmes_path(format: :pdf), class: "btn btn-outline-primary" %>
+  <%= link_to "⬇️ Exportar CSV", admin_filmes_path(format: :csv), class: "btn btn-outline-secondary" %>
+</div>
+
+<div class="card mb-4">
+  <div class="card-body">
+    <h2 class="h5 card-title">Importar filmes via CSV</h2>
+    <p class="text-muted mb-3">Utilize um arquivo CSV com colunas <code>titulo</code>, <code>sinopse</code>, <code>ano_lancamento</code>, <code>duracao</code> e <code>genero</code>.</p>
+    <%= form_with url: import_admin_filmes_path, method: :post, local: true, html: { multipart: true, class: "row g-3 align-items-center" } do |form| %>
+      <div class="col-md-6">
+        <%= form.file_field :file, accept: ".csv", class: "form-control" %>
+      </div>
+      <div class="col-md-auto">
+        <%= form.submit "⬆️ Importar CSV", class: "btn btn-outline-success" %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<table class="table table-bordered table-hover align-middle">
+  <thead class="table-dark">
+    <tr>
+      <th>ID</th>
+      <th>Título</th>
+      <th>Gênero</th>
+      <th>Ano</th>
+      <th>Duração</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @filmes.each do |filme| %>
+      <tr>
+        <td><%= filme.id %></td>
+        <td><%= filme.titulo %></td>
+        <td><%= filme.genero&.nome || "Sem gênero" %></td>
+        <td><%= filme.ano_lancamento %></td>
+        <td><%= filme.duracao %> min</td>
+        <td class="d-flex gap-2">
+          <%= link_to "🔍 Detalhes", admin_filme_path(filme), class: "btn btn-sm btn-outline-primary" %>
+          <%= link_to "✏️ Editar", edit_admin_filme_path(filme), class: "btn btn-sm btn-warning" %>
+          <%= button_to "🗑️ Excluir", admin_filme_path(filme),
+                        method: :delete,
+                        data: { confirm: "Tem certeza que deseja excluir este filme?" },
+                        class: "btn btn-sm btn-danger" %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-3">
+  <%= paginate @filmes, theme: 'bootstrap-5' %>
+  <%= link_to "⬅️ Voltar ao Dashboard", admin_root_path, class: "btn btn-secondary" %>
+</div>

@@ -1,15 +1,17 @@
 class FilmesController < ApplicationController
   before_action :set_filme, only: %i[ show edit update destroy ]
+  before_action :set_generos, only: %i[ new edit create update ]
 
   # GET /filmes or /filmes.json
   def index
-    @filmes = Filme.all
+    @filmes = Filme.includes(:genero).order(:titulo).page(params[:page])
   end
 
   # GET /filmes/1 or /filmes/1.json
   def show
     @filme = Filme.find(params[:id])
-    @copia_filmes = @filme.copia_filmes
+    @copia_filmes = @filme.copia_filmes.includes(:emprestimos)
+    @copia_filmes_disponiveis = @filme.copia_filmes.disponiveis_para_aluguel
   end
 
   # GET /filmes/new
@@ -62,11 +64,19 @@ class FilmesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_filme
-      @filme = Filme.find(params.expect(:id))
+      @filme = Filme.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def filme_params
-      params.expect(filme: [ :titulo, :sinopse, :ano_lancamento, :duracao, :genero_id ])
+      params.require(:filme).permit(:titulo, :sinopse, :ano_lancamento, :duracao, :genero_id)
+    end
+
+    def set_generos
+      @generos = Genero.order(:nome)
+    end
+
+    def set_generos
+      @generos = Genero.order(:nome)
     end
 end

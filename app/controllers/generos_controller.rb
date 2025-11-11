@@ -3,13 +3,13 @@ class GenerosController < ApplicationController
 
   # GET /generos or /generos.json
   def index
-    @generos = Genero.all
+    @generos = Genero.order(:nome).page(params[:page])
   end
 
   # GET /generos/1 or /generos/1.json
   def show
     @genero = Genero.find(params[:id])
-    @filmes = @genero.filmes
+    @filmes = @genero.filmes.order(:titulo).page(params[:page])
   end
 
   # GET /generos/new
@@ -62,11 +62,11 @@ class GenerosController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_genero
-      @genero = Genero.find(params.expect(:id))
+      @genero = Genero.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def genero_params
-      params.expect(genero: [ :nome ])
+      params.require(:genero).permit(:nome)
     end
 end

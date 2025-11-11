@@ -1,0 +1,42 @@
+<%= form_with(model: [:admin, @filme, copia_filme], local: true, class: "card p-4 shadow-sm") do |form| %>
+  <% if copia_filme.errors.any? %>
+    <div class="alert alert-danger">
+      <h5 class="alert-heading">Não foi possível salvar a cópia.</h5>
+      <ul class="mb-0">
+        <% copia_filme.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="mb-3">
+    <label class="form-label">Filme</label>
+    <p class="form-control-plaintext"><%= @filme.titulo %></p>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :status, class: "form-label" %>
+    <%= form.select :status, CopiaFilme::STATUS_OPTIONS, { prompt: "Selecione o status" }, { class: "form-select #{'is-invalid' if copia_filme.errors[:status].present?}" } %>
+    <% if copia_filme.errors[:status].present? %>
+      <div class="invalid-feedback">
+        <%= copia_filme.errors[:status].first %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :tipo_midia, "Tipo de mídia", class: "form-label" %>
+    <%= form.text_field :tipo_midia, class: "form-control #{'is-invalid' if copia_filme.errors[:tipo_midia].present?}" %>
+    <% if copia_filme.errors[:tipo_midia].present? %>
+      <div class="invalid-feedback">
+        <%= copia_filme.errors[:tipo_midia].first %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="d-flex justify-content-between">
+    <%= link_to "Voltar", admin_filme_path(@filme), class: "btn btn-outline-secondary" %>
+    <%= form.submit "Salvar", class: "btn btn-primary" %>
+  </div>
+<% end %>

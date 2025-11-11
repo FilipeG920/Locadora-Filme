@@ -1,32 +1,44 @@
-<%= form_with(model: copia_filme) do |form| %>
+<%= form_with(model: copia_filme, local: true, class: "card p-4 shadow-sm") do |form| %>
   <% if copia_filme.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(copia_filme.errors.count, "error") %> prohibited this copia_filme from being saved:</h2>
-
-      <ul>
-        <% copia_filme.errors.each do |error| %>
-          <li><%= error.full_message %></li>
+    <div class="alert alert-danger">
+      <h5 class="alert-heading">Não foi possível salvar a cópia.</h5>
+      <ul class="mb-0">
+        <% copia_filme.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
         <% end %>
       </ul>
     </div>
   <% end %>
 
-  <div>
-    <%= form.label :filme_id, style: "display: block" %>
-    <%= form.text_field :filme_id %>
+  <div class="mb-3">
+    <%= form.label :filme_id, "Filme", class: "form-label" %>
+    <%= form.collection_select :filme_id, Filme.order(:titulo), :id, :titulo, { prompt: "Selecione um filme" }, { class: "form-select #{'is-invalid' if copia_filme.errors[:filme].present?}" } %>
+    <% if copia_filme.errors[:filme].present? %>
+      <div class="invalid-feedback">
+        <%= copia_filme.errors[:filme].first %>
+      </div>
+    <% end %>
   </div>
 
-  <div>
-    <%= form.label :status, style: "display: block" %>
-    <%= form.text_field :status %>
+  <div class="mb-3">
+    <%= form.label :status, class: "form-label" %>
+    <%= form.select :status, CopiaFilme::STATUS_OPTIONS, { prompt: "Selecione o status" }, { class: "form-select #{'is-invalid' if copia_filme.errors[:status].present?}" } %>
+    <% if copia_filme.errors[:status].present? %>
+      <div class="invalid-feedback">
+        <%= copia_filme.errors[:status].first %>
+      </div>
+    <% end %>
   </div>
 
-  <div>
-    <%= form.label :tipo_midia, style: "display: block" %>
-    <%= form.text_field :tipo_midia %>
+  <div class="mb-3">
+    <%= form.label :tipo_midia, "Tipo de mídia", class: "form-label" %>
+    <%= form.text_field :tipo_midia, class: "form-control #{'is-invalid' if copia_filme.errors[:tipo_midia].present?}" %>
+    <% if copia_filme.errors[:tipo_midia].present? %>
+      <div class="invalid-feedback">
+        <%= copia_filme.errors[:tipo_midia].first %>
+      </div>
+    <% end %>
   </div>
 
-  <div>
-    <%= form.submit %>
-  </div>
+  <%= form.submit "Salvar", class: "btn btn-primary" %>
 <% end %>

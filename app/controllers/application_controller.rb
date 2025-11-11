@@ -11,6 +11,6 @@ class ApplicationController < ActionController::Base
     devise_parameter_sanitizer.permit(:sign_up, keys: [ :nome, :telefone, :endereco, :data_nascimento ])
 
     # Para o formulário de edição de conta (account_update)
-    devise_parameter_sanitizer.permit(:account_update, keys: [ :nome, :telefone, :endereco, :data_nascimento ])
+    devise_parameter_sanitizer.permit(:account_update, keys: [ :nome, :telefone, :endereco, :data_nascimento, :current_password ])
   end
 end

@@ -1,0 +1,64 @@
+<%= form_with(model: [:admin, filme], local: true, class: "card p-4 shadow-sm") do |f| %>
+  <% if filme.errors.any? %>
+    <div class="alert alert-danger">
+      <h5 class="alert-heading">Não foi possível salvar o filme.</h5>
+      <ul class="mb-0">
+        <% filme.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="mb-3">
+    <%= f.label :titulo, "Título", class: "form-label" %>
+    <%= f.text_field :titulo, class: "form-control #{'is-invalid' if filme.errors[:titulo].present?}", required: true %>
+    <% if filme.errors[:titulo].present? %>
+      <div class="invalid-feedback">
+        <%= filme.errors[:titulo].first %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :sinopse, "Sinopse", class: "form-label" %>
+    <%= f.text_area :sinopse, rows: 4, class: "form-control #{'is-invalid' if filme.errors[:sinopse].present?}" %>
+    <% if filme.errors[:sinopse].present? %>
+      <div class="invalid-feedback">
+        <%= filme.errors[:sinopse].first %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :ano_lancamento, "Ano de Lançamento", class: "form-label" %>
+    <%= f.number_field :ano_lancamento, class: "form-control #{'is-invalid' if filme.errors[:ano_lancamento].present?}", min: Filme::MIN_RELEASE_YEAR, max: Date.current.year + Filme::MAX_FUTURE_OFFSET %>
+    <% if filme.errors[:ano_lancamento].present? %>
+      <div class="invalid-feedback">
+        <%= filme.errors[:ano_lancamento].first %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :duracao, "Duração (minutos)", class: "form-label" %>
+    <%= f.number_field :duracao, class: "form-control #{'is-invalid' if filme.errors[:duracao].present?}", min: 1 %>
+    <% if filme.errors[:duracao].present? %>
+      <div class="invalid-feedback">
+        <%= filme.errors[:duracao].first %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :genero_id, "Gênero", class: "form-label" %>
+    <%= f.collection_select :genero_id, Genero.order(:nome), :id, :nome, { prompt: "Selecione um gênero" }, { class: "form-select #{'is-invalid' if filme.errors[:genero].present?}" } %>
+    <% if filme.errors[:genero].present? %>
+      <div class="invalid-feedback">
+        <%= filme.errors[:genero].first %>
+      </div>
+    <% end %>
+  </div>
+
+  <%= f.submit "💾 Salvar", class: "btn btn-primary" %>
+<% end %>

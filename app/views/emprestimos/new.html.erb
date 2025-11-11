@@ -1,0 +1,11 @@
+<% content_for :title, "New emprestimo" %>
+
+<h1>New emprestimo</h1>
+
+<%= render "form", emprestimo: @emprestimo %>
+
+<br>
+
+<div>
+  <%= link_to "Back to emprestimos", emprestimos_path %>
+</div>
